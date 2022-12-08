@@ -1,18 +1,18 @@
 <#
 .SYNOPSIS
-
+    Send-EPMAuthentication
 .DESCRIPTION
-
+    This method authenticates a user to EPM using username and password and returns a token that can be used in subsequent Rest API calls.
 .PARAMETER Credential
-
+    Required to be defined in the cmdlet.  Create a PSCredential utilizing Get-Credential.  Example: $cred = Get-Credential
 .PARAMETER LoginRegion
-
+    The geographical region in which your EPM server resides.
 .PARAMETER ApplicationID
-
+    Source application ID that distinguishes between REST API calls from EPM and REST API calls from another application. We recommend that you specify the customer's name.
 .PARAMETER Version
-
+    API version.  Version number. Format is x.x.x.x (for example, 11.5.0.1)
 .Example
-
+    Send-EPMAuthentication -Credential $cred -LoginRegion "US" -Version 22.11.1.2879 -ApplicationID "CyberArk REST API Script"
 #>
 
 Function Send-EPMAuthentication{
