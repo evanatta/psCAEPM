@@ -117,7 +117,7 @@ Function Send-EPMAuthentication{
 
     # Wrap things up
     END{
-
+        Return $Response
     } # End of END
 } # End of Send-EPMAuthentication
 

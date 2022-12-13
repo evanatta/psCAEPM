@@ -10,7 +10,7 @@
 .PARAMETER Version
     API version.  Version number. Format is x.x.x.x (for example, 11.5.0.1)
 .Example
-    Send-EPMAuthentication -Credential $cred -LoginRegion "US" -Version 22.11.1.2879 -ApplicationID "CyberArk REST API Script"
+    Send-EPMAuthentication -Credential $cred -LoginRegion "US" -Version 22.11.1.2879
 #>
 
 
@@ -80,6 +80,6 @@ function Send-SAMLAuthentication {
     }
     End
     {
-        
+        Return $Response
     }
 }
