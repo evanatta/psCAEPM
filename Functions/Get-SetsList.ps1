@@ -14,7 +14,7 @@
 .PARAMETER Authorization
     Token generated in the EPM authentication or SAML authentication API.
 .Example
-    Get-SetsList -LoginRegion "US" -Version 22.11.1.2879 -Offset 1 -Limit 2
+    Get-SetsList -LoginRegion "US" -Version 22.11.1.2879 -Offset 1 -Limit 2 -Token $Token
 #>
 
 Function Get-SetsList
@@ -69,12 +69,11 @@ Function Get-SetsList
 
         # Token - Authentication Token from EPM or SAML Authentication.
         [Parameter(
-            Mandatory = $false,
+            Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true
         )]
         [string]
-        [ValidateNotNullOrEmpty]
         $Token
     )
 
@@ -104,15 +103,18 @@ Function Get-SetsList
         # Add URI Query Parameters
         if($Offset -and !$Limit)
         {
-            $URI = "$URI?Offset=$Offset"
+            $URI = $URI + "?Offset=$Offset"
+            $URI
         }
         if($Limit -and !$Offset)
         {
-            $URI = "$URI?Limit=$Limit"
+            $URI = $URI + "?Limit=$Limit"
+            $URI
         }
         If($Offset -and $Limit)
         {
-            $URI = "$URI?Offset=$Offset&Limit=$Limit"
+            $URI = $URI + "?Offset=$Offset&Limit=$Limit"
+            $URI
         }
         # Method for the EPM Authentication API
         $Method = "GET"
@@ -137,7 +139,8 @@ Function Get-SetsList
     } # End of PROCESS
 
     # Wrap things up
-    END{
-
+    END
+    {
+        Return $Response
     } # End of END
 } # End of Get-EPMVersion
