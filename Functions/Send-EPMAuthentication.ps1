@@ -21,7 +21,8 @@ Function Send-EPMAuthentication{
     [CmdletBinding()]
     
     # Define Parameters
-    param(
+    param
+    (
 
         # Credential Object for EPM Authentication.  Use $Cred = Get-Credential and pass via pipline to function
         [Parameter(
@@ -65,7 +66,8 @@ Function Send-EPMAuthentication{
     )
 
     # Initial Configuration
-    BEGIN{
+    BEGIN
+    {
 
         # Establish DataCenter Region Identifier
         if($LoginRegion -eq 'US'){
@@ -103,11 +105,11 @@ Function Send-EPMAuthentication{
 
         # Set the session variable so script can be tracked between functions
         $SessionVariable = "EPMSession"
-
     } # End of BEGIN
 
     # Main Function 
-    PROCESS{
+    PROCESS
+    {
         # Send REST request and save the response
         $Response = Invoke-RestMethod -Uri $URI -Method $Method -Headers $Headers -Body $Body -SessionVariable $SessionVariable
 
@@ -116,7 +118,8 @@ Function Send-EPMAuthentication{
     } # End of PROCESS
 
     # Wrap things up
-    END{
+    END
+    {
         Return $Response
     } # End of END
 } # End of Send-EPMAuthentication
