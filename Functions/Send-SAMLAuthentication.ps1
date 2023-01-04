@@ -10,7 +10,7 @@
 .PARAMETER Version
     API version.  Version number. Format is x.x.x.x (for example, 11.5.0.1)
 .Example
-    Send-EPMAuthentication -Credential $cred -LoginRegion "US" -Version 22.11.1.2879
+    Send-SAMLAuthentication -Credential $cred -LoginRegion "US" -Version 22.11.1.2879
 #>
 
 
@@ -41,7 +41,8 @@ function Send-SAMLAuthentication {
         [string]
         $OrganizationIdentifier 
     )
-
+    
+    # Initial Configuration
     Begin
     {
         # Establish DataCenter Region Identifier
@@ -69,7 +70,9 @@ function Send-SAMLAuthentication {
 
         # Set the session variable so script can be tracked between functions
         $SessionVariable = "EPMSession"        
-    }
+    } # End of Begin
+
+    # Main Function 
     Process
     {
         # Send REST request and save the response
@@ -77,9 +80,11 @@ function Send-SAMLAuthentication {
 
         # Write output of response for validation 
         $Response | ConvertTo-Json
-    }
+    } # End of Process
+
+    # Wrap things up
     End
     {
         Return $Response
-    }
+    } # End of End
 }

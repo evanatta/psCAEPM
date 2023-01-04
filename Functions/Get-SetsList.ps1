@@ -14,7 +14,7 @@
 .PARAMETER Authorization
     Token generated in the EPM authentication or SAML authentication API.
 .Example
-    Get-SetsList -LoginRegion "US" -Version 22.11.1.2879 -Offset 1 -Limit 2 -Token $Token
+    Get-SetsList -LoginRegion "US" -Version 22.11.1.2879 -Offset 1 -Limit 2 -Authorization $Token
 #>
 
 Function Get-SetsList
@@ -26,17 +26,6 @@ Function Get-SetsList
     # Define Parameters
     param
     (
-
-        # Region that your EPM Server is located.  Default = 'US'
-        [Parameter(
-            Mandatory = $true,
-            ValueFromPipeline = $true,
-            ValueFromPipelineByPropertyName = $true
-        )]
-        [string]
-        [ValidateSet('AU', 'BETA', 'CA', 'EU', 'IN', 'IT', 'JP', 'SG', 'UK', 'US', IgnoreCase = $true)]
-        $LoginRegion, 
-
         # API Version - Must be in format x.x.x.x (example 11.5.0.1)
         [Parameter(
             Mandatory = $false,
@@ -67,61 +56,59 @@ Function Get-SetsList
         [ValidateRange(1,1000)]
         $Limit,
 
-        # Token - Authentication Token from EPM or SAML Authentication.
+        # Authorization - Authentication Token from EPM or SAML Authentication.
         [Parameter(
             Mandatory = $true,
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true
         )]
-        [string]
-        $Token
+        [psobject]
+        $Authorization
     )
 
     # Initial Configuration
     BEGIN
     {
 
-        # Establish DataCenter Region Identifier
-        if($LoginRegion -eq 'US')
-        {
-            $DataCenter = 'login'
-        }else
-        {
-            $DataCenter = $LoginRegion
-        }
+        # Set the EPM Manager Server from Authorization Token
+        $ManagerURL = $Authorization.ManagerURL
+
 
         # URL for EPM Authentication API
         if($Version)
         {
             # If the Version is defined as a parameter
-            $URI = "https://$DataCenter.epm.cyberark.com/EPM/API/$Version/Sets"
+            $URI = "$ManagerURL/EPM/API/$Version/Sets"
         }else
         {
-            $URI = "https://$DataCenter.epm.cyberark.com/EPM/API/Sets"
+            $URI = "$ManagerURL/EPM/API/Sets"
         }
         
-        # Add URI Query Parameters
-        if($Offset -and !$Limit)
-        {
-            $URI = $URI + "?Offset=$Offset"
-            $URI
+        # Add URI Search Parameters
+        $SearchParameterCount = 0
+        if($Offset){
+            $SearchParameterCount += 1
+            if($SearchParameterCount -gt 1){
+                $URI = $URI + "&Offset=$Offset"
+            }else{
+                $URI = $URI + "?Offset=$Offset"
+            }
         }
-        if($Limit -and !$Offset)
-        {
-            $URI = $URI + "?Limit=$Limit"
-            $URI
+        If($Limit){
+            $SearchParameterCount += 1
+            if($SearchParameterCount -gt 1){
+                $URI = $URI + "&Limit=$Limit"
+            }else{
+                $URI = $URI + "?Limit=$Limit"
+            }
         }
-        If($Offset -and $Limit)
-        {
-            $URI = $URI + "?Offset=$Offset&Limit=$Limit"
-            $URI
-        }
+
         # Method for the EPM Authentication API
         $Method = "GET"
 
         # Headers for EPM Authentication API
         $Headers = @{"Content-Type" = "application/json"}
-        $Headers.add("Authorization","basic $Token")
+        $Headers.add("Authorization","basic $($Authorization.EPMAuthenticationResult)")
 
         # Set the session variable so script can be tracked between functions
         $SessionVariable = "EPMSession"
@@ -143,4 +130,4 @@ Function Get-SetsList
     {
         Return $Response
     } # End of END
-} # End of Get-EPMVersion
+} # End of Get-SetsLists

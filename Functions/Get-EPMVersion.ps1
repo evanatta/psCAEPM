@@ -11,7 +11,7 @@
     Get-EPMVersion -LoginRegion "US" -Version 22.11.1.2879
 #>
 
-Function Send-EPMAuthentication
+Function Get-EPMVersion
 {
 
     # Enable Advanced Funciton Parameters
